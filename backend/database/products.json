@@ -1,0 +1,145 @@
+{
+  "products": [
+    {
+      "id": "prod-1",
+      "name": "PlayStation 5",
+      "description": "Consola de nueva generación con gráficos 4K y SSD ultrarrápido",
+      "price": 499.99,
+      "category": "consoles",
+      "stock": 15,
+      "image": "https://images.unsplash.com/photo-1606813907291-d86efa9b94db?auto=format&fit=crop&q=80&w=800",
+      "gallery": [
+        "http://localhost:3001/uploads/products/product-1766698730666-73038231.jpg"
+      ],
+      "featured": true,
+      "featuredOrder": 2,
+      "createdAt": "2024-01-15T10:00:00.000Z",
+      "updatedAt": "2025-12-25T21:38:52.538Z"
+    },
+    {
+      "id": "prod-2",
+      "name": "Xbox Series X",
+      "description": "La Xbox más potente de todos los tiempos con 12 teraflops",
+      "price": 499.99,
+      "category": "consoles",
+      "stock": 20,
+      "image": "https://images.unsplash.com/photo-1621259182978-fbf93132d53d?auto=format&fit=crop&q=80&w=800",
+      "gallery": [],
+      "featured": true,
+      "featuredOrder": 3,
+      "createdAt": "2024-01-15T10:00:00.000Z",
+      "updatedAt": "2025-12-25T21:33:19.390Z"
+    },
+    {
+      "id": "prod-3",
+      "name": "Nintendo Switch OLED",
+      "description": "Pantalla OLED vibrante de 7 pulgadas para gaming portátil",
+      "price": 349.99,
+      "category": "consoles",
+      "stock": 30,
+      "image": "https://images.unsplash.com/photo-1578303512597-81e6cc155b3e?auto=format&fit=crop&q=80&w=800",
+      "gallery": [],
+      "featured": true,
+      "featuredOrder": 4,
+      "createdAt": "2024-01-15T10:00:00.000Z",
+      "updatedAt": "2025-12-25T21:33:19.391Z"
+    },
+    {
+      "id": "prod-4",
+      "name": "The Last of Us Part II",
+      "description": "Aventura de acción post-apocalíptica exclusiva de PlayStation",
+      "price": 59.99,
+      "category": "games",
+      "stock": 50,
+      "image": "https://images.unsplash.com/photo-1542751371-adc38448a05e?auto=format&fit=crop&q=80&w=800",
+      "gallery": [],
+      "featured": false,
+      "createdAt": "2024-01-15T10:00:00.000Z",
+      "updatedAt": "2024-01-15T10:00:00.000Z"
+    },
+    {
+      "id": "prod-5",
+      "name": "DualSense Controller",
+      "description": "Control inalámbrico para PS5 con retroalimentación háptica",
+      "price": 69.99,
+      "category": "accessories",
+      "stock": 45,
+      "image": "https://images.unsplash.com/photo-1606318801954-d46d46d3360a?auto=format&fit=crop&q=80&w=800",
+      "gallery": [],
+      "featured": false,
+      "createdAt": "2024-01-15T10:00:00.000Z",
+      "updatedAt": "2024-01-15T10:00:00.000Z"
+    },
+    {
+      "id": "prod-1766698390450-9j5zhes",
+      "name": "IPHONE 8",
+      "description": "FSDFSDF",
+      "price": 700,
+      "category": "CELULAR",
+      "stock": 132,
+      "image": "http://localhost:3001/uploads/products/product-1766698378730-279891449.jpg",
+      "gallery": [],
+      "featured": true,
+      "createdAt": "2025-12-25T21:33:10.450Z",
+      "updatedAt": "2025-12-25T21:33:19.387Z",
+      "featuredOrder": 1
+    },
+    {
+      "id": "prod-1766701908067-vozdnvf",
+      "name": "KEY GAME PASS 2 MESES",
+      "description": "FSDFSDF",
+      "price": 9000,
+      "category": "KEYS",
+      "stock": 12,
+      "image": "http://localhost:3001/uploads/products/product-1766701873438-65583025.jpg",
+      "gallery": [
+        "http://localhost:3001/uploads/products/product-1766701904996-712260585.webp"
+      ],
+      "featured": false,
+      "isDigitalProduct": true,
+      "digitalKeys": [
+        {
+          "id": "key-1766701908066-0",
+          "code": "PSPLUS-2024-XMAS-A1B2C3D4",
+          "status": "available",
+          "usedAt": null,
+          "usedBy": null,
+          "createdAt": "2025-12-25T22:31:48.066Z"
+        },
+        {
+          "id": "key-1766701908066-1",
+          "code": "STEAM-K7H9-M3N2-P5Q8-R4T6",
+          "status": "available",
+          "usedAt": null,
+          "usedBy": null,
+          "createdAt": "2025-12-25T22:31:48.066Z"
+        },
+        {
+          "id": "key-1766701908066-2",
+          "code": "NINTENDO-ESHOP-50USD-DEMO123",
+          "status": "available",
+          "usedAt": null,
+          "usedBy": null,
+          "createdAt": "2025-12-25T22:31:48.066Z"
+        }
+      ],
+      "createdAt": "2025-12-25T22:31:48.067Z",
+      "updatedAt": "2025-12-25T22:31:48.067Z"
+    },
+    {
+      "id": "prod-1766718730136-wdsekgj",
+      "name": "babilla2",
+      "description": "fsdfsdfsf",
+      "price": 9000,
+      "category": "babilla",
+      "stock": 2,
+      "image": "http://localhost:3001/uploads/products/product-1766718727991-900796962.webp",
+      "gallery": [],
+      "featured": true,
+      "isDigitalProduct": false,
+      "digitalKeys": [],
+      "createdAt": "2025-12-26T03:12:10.136Z",
+      "updatedAt": "2025-12-26T03:12:10.136Z"
+    }
+  ]
+}

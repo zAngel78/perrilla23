@@ -1,0 +1,45 @@
+{
+  "slides": [
+    {
+      "id": "slide-1",
+      "order": 1,
+      "image": "https://images.unsplash.com/photo-1542751371-adc38448a05e?w=1920&q=80",
+      "showText": true,
+      "title": "Bienvenido a Tio Calcifer",
+      "subtitle": "La mejor tienda de gaming y productos digitales",
+      "buttonText": "Explorar Tienda",
+      "buttonLink": "/shop",
+      "active": true,
+      "createdAt": "2025-12-25T00:00:00.000Z",
+      "updatedAt": "2025-12-25T00:00:00.000Z"
+    }
+  ],
+  "hero-slides": [
+    {
+      "id": "hero-1766707526474-84iocia",
+      "order": 1,
+      "image": "http://localhost:3001/uploads/products/product-1766707508405-794617987.webp",
+      "showText": true,
+      "title": "preveto",
+      "subtitle": "2423424",
+      "buttonText": "43434",
+      "buttonLink": "/shop",
+      "active": true,
+      "createdAt": "2025-12-26T00:05:26.474Z",
+      "updatedAt": "2025-12-26T03:11:37.555Z"
+    },
+    {
+      "id": "hero-1766707559017-1vawvtx",
+      "order": 2,
+      "image": "http://localhost:3001/uploads/products/product-1766707554031-696289212.webp",
+      "showText": true,
+      "title": "BABILLA",
+      "subtitle": "4324234",
+      "buttonText": "",
+      "buttonLink": "",
+      "active": true,
+      "createdAt": "2025-12-26T00:05:59.017Z",
+      "updatedAt": "2025-12-26T03:11:40.294Z"
+    }
+  ]
+}

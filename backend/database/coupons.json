@@ -1,0 +1,79 @@
+{
+  "coupons": [
+    {
+      "id": "coup-1",
+      "code": "NAVIDAD2024",
+      "description": "Descuento de Navidad",
+      "type": "percentage",
+      "value": 20,
+      "minPurchase": 100,
+      "maxDiscount": 50,
+      "usageLimit": 100,
+      "usageCount": 15,
+      "active": true,
+      "expiresAt": "2024-12-31T23:59:59.000Z",
+      "createdAt": "2024-12-01T00:00:00.000Z",
+      "updatedAt": "2024-12-25T14:30:00.000Z"
+    },
+    {
+      "id": "coup-2",
+      "code": "WELCOME10",
+      "description": "Bienvenida - 10% descuento",
+      "type": "percentage",
+      "value": 10,
+      "minPurchase": 50,
+      "maxDiscount": null,
+      "usageLimit": null,
+      "usageCount": 46,
+      "active": true,
+      "expiresAt": null,
+      "createdAt": "2024-01-01T00:00:00.000Z",
+      "updatedAt": "2025-12-25T22:10:10.203Z"
+    },
+    {
+      "id": "coup-3",
+      "code": "GAMING50",
+      "description": "$50 de descuento en compras grandes",
+      "type": "fixed",
+      "value": 50,
+      "minPurchase": 300,
+      "maxDiscount": null,
+      "usageLimit": 50,
+      "usageCount": 8,
+      "active": true,
+      "expiresAt": "2025-01-31T23:59:59.000Z",
+      "createdAt": "2024-12-15T00:00:00.000Z",
+      "updatedAt": "2024-12-25T12:00:00.000Z"
+    },
+    {
+      "id": "coup-4",
+      "code": "EXPIRED2023",
+      "description": "Cupón expirado (para testing)",
+      "type": "percentage",
+      "value": 30,
+      "minPurchase": 0,
+      "maxDiscount": null,
+      "usageLimit": 10,
+      "usageCount": 10,
+      "active": false,
+      "expiresAt": "2023-12-31T23:59:59.000Z",
+      "createdAt": "2023-01-01T00:00:00.000Z",
+      "updatedAt": "2023-12-31T23:59:59.000Z"
+    },
+    {
+      "id": "coup-5",
+      "code": "FREESHIP",
+      "description": "Envío gratis en todas las compras",
+      "type": "free_shipping",
+      "value": 0,
+      "minPurchase": 0,
+      "maxDiscount": null,
+      "usageLimit": null,
+      "usageCount": 123,
+      "active": true,
+      "expiresAt": null,
+      "createdAt": "2024-06-01T00:00:00.000Z",
+      "updatedAt": "2024-12-25T11:30:00.000Z"
+    }
+  ]
+}

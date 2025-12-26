@@ -1,0 +1,8 @@
+# Ignorar archivos temporales y backups
+*.backup
+*.tmp
+*.bak
+
+# NO ignorar los archivos JSON base (son parte del repositorio)
+# Si quieres ignorarlos en producción, descomenta:
+# *.json

@@ -1,0 +1,35 @@
+# Dependencies
+node_modules/
+package-lock.json
+
+# Environment variables
+.env
+
+# Database - Datos sensibles (NO subir)
+database/users.json
+database/orders.json
+
+# Logs
+logs/
+*.log
+npm-debug.log*
+
+# Uploads - Imágenes subidas (NO subir, muy pesadas)
+uploads/products/*
+!uploads/products/.gitkeep
+uploads/hero-slides/*
+!uploads/hero-slides/.gitkeep
+
+# PM2
+.pm2/
+pids/
+*.pid
+*.seed
+*.pid.lock
+
+# Archivos temporales
+*.tmp
+.cache/
+
+# Test files
+test-*.js

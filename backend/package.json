@@ -1,0 +1,32 @@
+{
+  "name": "tiocalcifer-backend",
+  "version": "1.0.0",
+  "description": "Backend proxy for TioCalcifer Fortnite API",
+  "main": "server.js",
+  "type": "module",
+  "scripts": {
+    "start": "node server.js",
+    "dev": "node --watch server.js"
+  },
+  "keywords": [
+    "fortnite",
+    "api",
+    "proxy",
+    "express"
+  ],
+  "author": "TioCalcifer",
+  "license": "ISC",
+  "dependencies": {
+    "axios": "^1.6.7",
+    "bcryptjs": "^3.0.3",
+    "cors": "^2.8.5",
+    "dotenv": "^17.2.3",
+    "express": "^4.18.2",
+    "fnapicom": "^2.1.0",
+    "form-data": "^4.0.5",
+    "jsonwebtoken": "^9.0.3",
+    "mailgun.js": "^12.4.0",
+    "mercadopago": "^2.11.0",
+    "multer": "^2.0.2"
+  }
+}

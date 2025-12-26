@@ -1,0 +1,26 @@
+{
+  "currencies": [
+    {
+      "id": "curr-clp",
+      "code": "CLP",
+      "name": "Peso Chileno",
+      "symbol": "$",
+      "rateToUSD": 900,
+      "isDefault": true,
+      "active": true,
+      "createdAt": "2025-12-25T00:00:00.000Z",
+      "updatedAt": "2025-12-26T03:15:18.399Z"
+    },
+    {
+      "id": "curr-usd",
+      "code": "USD",
+      "name": "Dólar Estadounidense",
+      "symbol": "$",
+      "rateToUSD": 1,
+      "isDefault": false,
+      "active": true,
+      "createdAt": "2025-12-25T00:00:00.000Z",
+      "updatedAt": "2025-12-25T00:00:00.000Z"
+    }
+  ]
+}

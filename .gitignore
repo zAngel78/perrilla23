@@ -1,0 +1,56 @@
+# Dependencies
+node_modules/
+package-lock.json
+
+# Build output
+dist/
+build/
+.vite/
+
+# Environment variables
+.env
+.env.local
+.env.development
+.env.production
+.env.*.local
+
+# Logs
+logs/
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+lerna-debug.log*
+
+# Editor directories
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Testing
+coverage/
+.nyc_output/
+
+# Temp files
+*.tmp
+.cache/
+
+# Carpetas no relacionadas al proyecto principal
+new-portfolio/
+portfolio-awwwards/
+FortniteShop-master/
+
+# Archivos temporales de prueba
+first_item.json
+fortnite_response.json
+
+# Archivos de documentación temporal
+*.md
+!README.md
