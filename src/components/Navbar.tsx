@@ -344,10 +344,10 @@ export const Navbar = () => {
                   <Link 
                     to={link.path}
                     onClick={() => setMobileMenuOpen(false)}
-                    className="flex items-center justify-between p-4 rounded-xl bg-white/5 border border-white/5 hover:bg-brand-green hover:text-brand-dark hover:border-brand-green transition-all group"
+                    className="flex items-center justify-between p-4 rounded-xl bg-white/5 border border-white/5 hover:bg-brand-green hover:border-brand-green transition-all group text-white hover:text-brand-dark"
                   >
-                    <span className="text-2xl font-black uppercase tracking-wider">{link.name}</span>
-                    <Zap className="opacity-0 group-hover:opacity-100 transition-opacity" size={20} />
+                    <span className="text-2xl font-black uppercase tracking-wider group-hover:text-brand-dark">{link.name}</span>
+                    <Zap className="opacity-0 group-hover:opacity-100 transition-opacity group-hover:text-brand-dark" size={20} />
                   </Link>
                 </motion.div>
               ))}
