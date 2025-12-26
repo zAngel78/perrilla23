@@ -224,7 +224,7 @@ router.put('/reorder/bulk', authenticate, isAdmin, async (req, res) => {
  */
 router.delete('/:id', authenticate, isAdmin, async (req, res) => {
   try {
-    const deleted = await db.remove('hero-slides', req.params.id);
+    const deleted = await db.delete('hero-slides', req.params.id);
     
     if (!deleted) {
       return res.status(404).json({
