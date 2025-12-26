@@ -84,8 +84,8 @@ app.use('/api/products', productsRouter);
 // Rutas de upload (protegidas - solo admin)
 app.use('/api/upload', uploadRouter);
 
-// Rutas de órdenes (protegidas - solo admin para gestión)
-app.use('/api/orders', authenticate, isAdmin, ordersRouter);
+// Rutas de órdenes (usuarios autenticados pueden crear, admin puede gestionar)
+app.use('/api/orders', ordersRouter);
 
 // Rutas de usuarios (protegidas - solo admin)
 app.use('/api/users', authenticate, isAdmin, usersRouter);

@@ -8,6 +8,7 @@ const router = express.Router();
 /**
  * POST /api/payments/create-preference
  * Crear preferencia de pago en MercadoPago
+ * Cualquier usuario autenticado puede crear una preferencia
  */
 router.post('/create-preference', authenticate, async (req, res) => {
   try {
