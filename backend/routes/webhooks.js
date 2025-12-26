@@ -5,11 +5,6 @@ import { sendKeyEmail } from '../utils/mailer.js';
 
 const router = express.Router();
 
-// Configurar MercadoPago
-const client = new MercadoPagoConfig({
-  accessToken: process.env.MERCADOPAGO_ACCESS_TOKEN,
-});
-
 /**
  * POST /api/payments/webhook
  * Webhook de MercadoPago para recibir notificaciones de pago
@@ -24,6 +19,11 @@ router.post('/webhook', async (req, res) => {
     // Solo procesar notificaciones de pago
     if (type === 'payment') {
       const paymentId = data.id;
+
+      // Configurar cliente de MercadoPago (crear en cada request para asegurar que las variables de entorno estén cargadas)
+      const client = new MercadoPagoConfig({
+        accessToken: process.env.MERCADOPAGO_ACCESS_TOKEN,
+      });
 
       // Obtener información del pago
       const payment = new Payment(client);
