@@ -66,6 +66,7 @@ router.post('/create-preference', authenticate, async (req, res) => {
         failure: `${process.env.FRONTEND_URL}/payment/failure?orderId=${orderId}`,
         pending: `${process.env.FRONTEND_URL}/payment/pending?orderId=${orderId}`,
       },
+      notification_url: `${process.env.BACKEND_URL}/api/payments/webhook`,
       external_reference: orderId,
       statement_descriptor: 'Tio Calcifer Shop',
       binary_mode: true,
