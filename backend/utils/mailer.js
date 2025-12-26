@@ -1,20 +1,19 @@
 import formData from 'form-data';
 import Mailgun from 'mailgun.js';
 
-// Configurar Mailgun
-const mailgun = new Mailgun(formData);
-
-let mg = null;
-
-// Inicializar Mailgun solo si hay credenciales
-if (process.env.MAILGUN_API_KEY && process.env.MAILGUN_DOMAIN) {
-  mg = mailgun.client({
+/**
+ * Crear cliente de Mailgun (se crea cada vez para asegurar que las env vars estén cargadas)
+ */
+function getMailgunClient() {
+  if (!process.env.MAILGUN_API_KEY || !process.env.MAILGUN_DOMAIN) {
+    return null;
+  }
+  
+  const mailgun = new Mailgun(formData);
+  return mailgun.client({
     username: 'api',
     key: process.env.MAILGUN_API_KEY,
   });
-  console.log('✅ Mailgun configurado correctamente');
-} else {
-  console.warn('⚠️ Mailgun no configurado - Se simularán los envíos de email');
 }
 
 /**
@@ -22,6 +21,8 @@ if (process.env.MAILGUN_API_KEY && process.env.MAILGUN_DOMAIN) {
  */
 export async function sendKeyEmail(customerEmail, customerName, assignedKeys, order) {
   try {
+    const mg = getMailgunClient();
+    
     if (!mg) {
       console.log('📧 [SIMULADO] Email a:', customerEmail);
       console.log('🔑 Keys que se enviarían:', assignedKeys);
@@ -151,6 +152,8 @@ export async function sendKeyEmail(customerEmail, customerName, assignedKeys, or
  */
 export async function sendOrderConfirmationEmail(customerEmail, customerName, order) {
   try {
+    const mg = getMailgunClient();
+    
     if (!mg) {
       console.log('📧 [SIMULADO] Email de confirmación a:', customerEmail);
       return { success: true, simulated: true };
