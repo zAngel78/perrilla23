@@ -5,14 +5,16 @@ import { useCurrency } from '../context/CurrencyContext';
 import { ShoppingCart } from 'lucide-react';
 import { Product } from '../types';
 import { apiService } from '../services/api.service';
+import { fortnitePricesService } from '../services/fortnite-prices.service';
 
 interface BundleCardProps {
   bundle: any; // Original entry from API with bundle info
   index: number;
 }
 
-// Cache para la tasa de conversión
+// Cache para la tasa de conversión y overrides de precios
 let cachedRate: number | null = null;
+let cachedPriceOverrides: Map<string, number> | null = null;
 
 export const BundleCard: React.FC<BundleCardProps> = ({ bundle, index }) => {
   // Get all items in the bundle
@@ -21,42 +23,61 @@ export const BundleCard: React.FC<BundleCardProps> = ({ bundle, index }) => {
   const bundleName = bundle.bundle?.name || 'Bundle';
   const bundleInfo = bundle.bundle?.info || '';
   const price = bundle.finalPrice || bundle.regularPrice || 0;
-  
+  const bundleId = bundle.offerId || `bundle-${index}`;
+
   const { addToCart } = useCart();
   const { formatPrice } = useCurrency();
   const [vbucksRate, setVbucksRate] = useState(cachedRate || 4.4);
+  const [customPrice, setCustomPrice] = useState<number | null>(null);
 
   useEffect(() => {
-    // Solo cargar si no tenemos cache
-    if (!cachedRate) {
-      loadVBucksRate();
+    // Cargar datos si no tenemos cache
+    if (!cachedRate || !cachedPriceOverrides) {
+      loadPricingData();
+    } else {
+      // Usar cache existente
+      setCustomPrice(cachedPriceOverrides.get(bundleId) || null);
     }
-  }, []);
+  }, [bundleId]);
 
-  const loadVBucksRate = async () => {
+  const loadPricingData = async () => {
     try {
-      const response = await apiService.get('/api/settings');
-      const rate = response.data.fortniteVBucksRate || 4.4;
-      cachedRate = rate; // Guardar en cache
+      const [settingsResponse, overridesResponse] = await Promise.all([
+        apiService.get('/api/settings'),
+        fortnitePricesService.getAll()
+      ]);
+
+      const rate = settingsResponse.data.fortniteVBucksRate || 4.4;
+      cachedRate = rate;
       setVbucksRate(rate);
+
+      // Crear mapa de overrides para búsqueda rápida
+      const overridesMap = new Map<string, number>();
+      overridesResponse
+        .filter(o => o.active)
+        .forEach(o => overridesMap.set(o.itemId, o.customPrice));
+
+      cachedPriceOverrides = overridesMap;
+      setCustomPrice(overridesMap.get(bundleId) || null);
     } catch (error) {
-      console.error('Error loading V-Bucks rate:', error);
+      console.error('Error loading pricing data:', error);
       setVbucksRate(4.4);
+      setCustomPrice(null);
     }
   };
 
-  // Calcular precio en CLP
-  const priceInCLP = price * vbucksRate;
+  // Calcular precio en CLP (usar precio personalizado si existe, sino usar tasa)
+  const priceInCLP = customPrice !== null ? customPrice : (price * vbucksRate);
 
   const handleAddToCart = (e: React.MouseEvent) => {
     e.stopPropagation();
-    
+
     // Convertir Bundle a Product para el carrito (precio en CLP)
     const product: Product = {
-      id: bundle.offerId || `bundle-${index}`,
+      id: bundleId,
       name: bundleName,
       description: bundleInfo || `Bundle con ${bundleItems.length} items`,
-      price: priceInCLP, // Precio directo en CLP
+      price: priceInCLP, // Precio directo en CLP (personalizado o calculado)
       image: bundleImage || (bundleItems[0]?.images?.icon || ''),
       category: 'fortnite-bundle',
       stock: 999,

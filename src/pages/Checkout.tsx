@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useCart } from '../context/CartContext';
 import { useCurrency } from '../context/CurrencyContext';
 import { useAuth } from '../context/AuthContext';
@@ -7,6 +7,7 @@ import { Link, useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { ordersService } from '../services/orders.service';
 import { paymentsService } from '../services/payments.service';
+import { apiService } from '../services/api.service';
 
 export const Checkout = () => {
   const { items, removeFromCart, updateQuantity, total, clearCart } = useCart();
@@ -16,13 +17,38 @@ export const Checkout = () => {
   const [promoCode, setPromoCode] = useState('');
   const [processing, setProcessing] = useState(false);
   const [fortniteUsername, setFortniteUsername] = useState('');
+  const [adminFortniteUsernames, setAdminFortniteUsernames] = useState<string[]>([]);
 
   const subtotal = total;
   const shipping = 0; // Free shipping
   const finalTotal = subtotal + shipping;
 
   // Verificar si hay productos de Fortnite en el carrito
-  const hasFortniteItems = items.some(item => item.category === 'fortnite');
+  const hasFortniteItems = items.some(item =>
+    item.category === 'fortnite' || item.category === 'fortnite-bundle'
+  );
+
+  // Cargar usernames del admin cuando hay items de Fortnite
+  useEffect(() => {
+    if (hasFortniteItems) {
+      loadAdminUsernames();
+    }
+  }, [hasFortniteItems]);
+
+  const loadAdminUsernames = async () => {
+    try {
+      const response = await apiService.get('/api/settings');
+      const usernames = response.data.fortniteUsernames || '';
+      // Convertir string con líneas a array
+      const usernamesArray = usernames
+        .split('\n')
+        .map((u: string) => u.trim())
+        .filter((u: string) => u.length > 0);
+      setAdminFortniteUsernames(usernamesArray);
+    } catch (error) {
+      console.error('Error loading admin usernames:', error);
+    }
+  };
 
   const handleCheckout = async () => {
     if (!isAuthenticated) {
@@ -188,26 +214,83 @@ export const Checkout = () => {
               <motion.div
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
-                className="bg-gradient-to-br from-purple-500/10 to-blue-500/10 border border-purple-500/30 rounded-lg p-6"
+                className="bg-gradient-to-br from-brand-green/10 to-brand-yellow/10 border border-brand-green/30 rounded-lg p-6 space-y-4"
               >
-                <h3 className="text-white font-bold mb-2 flex items-center gap-2">
-                  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" className="text-purple-400">
-                    <path d="M12 2L2 7L12 12L22 7L12 2Z" fill="currentColor"/>
-                    <path d="M2 17L12 22L22 17" stroke="currentColor" strokeWidth="2"/>
-                  </svg>
-                  Usuario de Fortnite
-                </h3>
-                <p className="text-gray-400 text-sm mb-3">
-                  Ingresa tu nombre de usuario para recibir los V-Bucks
-                </p>
-                <input
-                  type="text"
-                  placeholder="Ej: NinjaFortnite"
-                  value={fortniteUsername}
-                  onChange={(e) => setFortniteUsername(e.target.value)}
-                  className="w-full px-4 py-3 bg-black/40 border border-purple-500/30 rounded text-white placeholder-gray-500 focus:outline-none focus:border-purple-500/60 focus:bg-black/60 transition-all"
-                  required={hasFortniteItems}
-                />
+                {/* Paso 1: Mostrar usernames del admin para agregar */}
+                {adminFortniteUsernames.length > 0 && (
+                  <div className="bg-brand-green/10 border border-brand-green/30 rounded-lg p-4">
+                    <div className="flex items-start gap-3 mb-3">
+                      <div className="flex-shrink-0">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" className="text-brand-green mt-0.5">
+                          <path d="M12 2L2 7L12 12L22 7L12 2Z" fill="currentColor"/>
+                          <path d="M2 17L12 22L22 17" stroke="currentColor" strokeWidth="2"/>
+                        </svg>
+                      </div>
+                      <div className="flex-1">
+                        <p className="text-brand-green text-sm font-semibold mb-2">
+                          Paso 1: Agrega estas cuentas como amigos en Fortnite
+                        </p>
+                        <p className="text-gray-300 text-xs mb-3">
+                          Debes agregar {adminFortniteUsernames.length === 1 ? 'esta cuenta' : 'estas cuentas'} y esperar <span className="font-bold text-brand-green">48 horas</span> antes de comprar:
+                        </p>
+                        <div className="space-y-2">
+                          {adminFortniteUsernames.map((username, idx) => (
+                            <div key={idx} className="flex items-center gap-2 bg-black/30 rounded px-3 py-2">
+                              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" className="text-brand-green flex-shrink-0">
+                                <path d="M12 2L2 7L12 12L22 7L12 2Z" fill="currentColor"/>
+                                <path d="M2 17L12 22L22 17" stroke="currentColor" strokeWidth="2"/>
+                              </svg>
+                              <code className="text-brand-green/90 font-mono text-sm">{username}</code>
+                            </div>
+                          ))}
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                )}
+
+                {/* Paso 2: Input para username del cliente */}
+                <div>
+                  <h3 className="text-white font-bold mb-2 flex items-center gap-2">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" className="text-brand-green">
+                      <path d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" fill="currentColor"/>
+                    </svg>
+                    {adminFortniteUsernames.length > 0 ? 'Paso 2: Tu Usuario de Fortnite' : 'Usuario de Fortnite'}
+                  </h3>
+                  <p className="text-gray-400 text-sm mb-3">
+                    Ingresa tu nombre de usuario o Epic ID para recibir el regalo
+                  </p>
+                  <input
+                    type="text"
+                    placeholder="Ej: NinjaFortnite o tu Epic ID"
+                    value={fortniteUsername}
+                    onChange={(e) => setFortniteUsername(e.target.value)}
+                    className="w-full px-4 py-3 bg-black/40 border border-brand-green/30 rounded text-white placeholder-gray-500 focus:outline-none focus:border-brand-green/60 focus:bg-black/60 transition-all"
+                    required={hasFortniteItems}
+                  />
+                </div>
+
+                {/* Mensaje de advertencia de 48 horas */}
+                <div className="bg-yellow-500/10 border border-yellow-500/30 rounded-lg p-4">
+                  <div className="flex gap-3">
+                    <div className="flex-shrink-0">
+                      <svg className="w-5 h-5 text-yellow-400 mt-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                      </svg>
+                    </div>
+                    <div>
+                      <p className="text-yellow-200 text-sm font-semibold mb-1">
+                        Importante: Requisito de 48 horas
+                      </p>
+                      <p className="text-yellow-100/80 text-xs leading-relaxed">
+                        {adminFortniteUsernames.length > 0
+                          ? `Para poder enviarte el regalo en Fortnite, debes tener agregad${adminFortniteUsernames.length === 1 ? 'a' : 'as'} ${adminFortniteUsernames.length === 1 ? 'la cuenta mostrada arriba' : 'las cuentas mostradas arriba'} como amig${adminFortniteUsernames.length === 1 ? 'o' : 'os'} durante al menos 48 horas antes de realizar esta compra. De lo contrario, el envío del regalo no será válido.`
+                          : 'Para poder enviarte el regalo en Fortnite, debes tener agregada nuestra cuenta como amigo durante al menos 48 horas antes de realizar esta compra. De lo contrario, el envío del regalo no será válido.'
+                        }
+                      </p>
+                    </div>
+                  </div>
+                </div>
               </motion.div>
             )}
 

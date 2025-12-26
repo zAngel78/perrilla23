@@ -212,8 +212,12 @@ function transformNewItem(entry: any): FortniteItem {
     image = `https://placehold.co/512x512/${color}/ffffff?text=${encodeURIComponent(type)}`;
   }
   
+  // Para bundles, siempre usar entry.offerId (que es el ID del bundle completo)
+  // Para items regulares, usar item.id
+  const itemId = bundle ? entry.offerId : (item.id || entry.offerId || `item-${Date.now()}-${Math.random()}`);
+
   return {
-    id: item.id || entry.offerId || `item-${Date.now()}-${Math.random()}`,
+    id: itemId,
     name: name,
     description: description,
     type: type,

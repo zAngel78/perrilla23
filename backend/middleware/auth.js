@@ -85,11 +85,11 @@ export const isAdmin = (req, res, next) => {
 export const optionalAuth = async (req, res, next) => {
   try {
     const token = req.headers.authorization?.replace('Bearer ', '');
-    
+
     if (token) {
       const decoded = jwt.verify(token, JWT_SECRET);
       const user = await db.getById('users', decoded.id);
-      
+
       if (user) {
         const { password: _, ...userWithoutPassword } = user;
         req.user = userWithoutPassword;
@@ -98,6 +98,11 @@ export const optionalAuth = async (req, res, next) => {
   } catch (error) {
     // Ignorar errores en autenticación opcional
   }
-  
+
   next();
 };
+
+/**
+ * Alias para compatibilidad
+ */
+export const requireAdmin = isAdmin;

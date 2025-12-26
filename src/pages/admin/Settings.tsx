@@ -7,6 +7,7 @@ export const Settings = () => {
   const [saving, setSaving] = useState(false);
   const [vbucksRate, setVbucksRate] = useState(4.4);
   const [slideInterval, setSlideInterval] = useState(5000);
+  const [fortniteUsernames, setFortniteUsernames] = useState('');
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
@@ -19,6 +20,7 @@ export const Settings = () => {
       const response = await apiService.get('/api/settings');
       setVbucksRate(response.data.fortniteVBucksRate || 4.4);
       setSlideInterval(response.data.heroSlideInterval || 5000);
+      setFortniteUsernames(response.data.fortniteUsernames || '');
     } catch (error) {
       console.error('Error loading settings:', error);
     } finally {
@@ -31,7 +33,8 @@ export const Settings = () => {
     try {
       await apiService.put('/api/settings', {
         fortniteVBucksRate: parseFloat(vbucksRate.toString()),
-        heroSlideInterval: parseInt(slideInterval.toString())
+        heroSlideInterval: parseInt(slideInterval.toString()),
+        fortniteUsernames: fortniteUsernames.trim()
       });
       alert('✅ Configuración guardada correctamente');
     } catch (error) {
@@ -124,6 +127,41 @@ export const Settings = () => {
                   <p className="text-gray-400 text-sm">{(2000 * vbucksRate).toLocaleString('es-CL')} CLP</p>
                 </div>
               </div>
+            </div>
+
+            {/* Usernames de Fortnite para envío de regalos */}
+            <div className="border-t border-white/10 pt-6 mt-6">
+              <label className="block text-gray-400 text-sm font-semibold mb-2">
+                Usernames de Fortnite (para envío de regalos)
+              </label>
+              <textarea
+                rows={3}
+                value={fortniteUsernames}
+                onChange={(e) => setFortniteUsernames(e.target.value)}
+                disabled={loading}
+                placeholder="Ej: TioCalcifer_Store, TioCalcifer_Gifts&#10;Escribe un username por línea"
+                className="w-full px-4 py-3 bg-white/5 border border-white/10 rounded-lg text-white placeholder-gray-500 focus:outline-none focus:border-brand-green/50 transition-all resize-none font-mono text-sm"
+              />
+              <p className="text-gray-500 text-sm mt-2">
+                Escribe los nombres de usuario de las cuentas de Fortnite que usas para enviar regalos (uno por línea). Los clientes deberán agregar estas cuentas como amigos antes de comprar.
+              </p>
+
+              {fortniteUsernames.trim() && (
+                <div className="bg-purple-500/10 border border-purple-500/30 rounded-lg p-4 mt-3">
+                  <p className="text-purple-200 text-xs font-semibold mb-2">Vista previa (cómo lo verán los clientes):</p>
+                  <div className="space-y-1">
+                    {fortniteUsernames.split('\n').filter(u => u.trim()).map((username, idx) => (
+                      <div key={idx} className="flex items-center gap-2 text-sm">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" className="text-purple-400 flex-shrink-0">
+                          <path d="M12 2L2 7L12 12L22 7L12 2Z" fill="currentColor"/>
+                          <path d="M2 17L12 22L22 17" stroke="currentColor" strokeWidth="2"/>
+                        </svg>
+                        <code className="text-purple-300 font-mono">{username.trim()}</code>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              )}
             </div>
           </div>
         </motion.div>

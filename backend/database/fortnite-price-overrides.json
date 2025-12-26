@@ -1,1 +1,14 @@
-[]
+{
+  "fortnite-price-overrides": [
+    {
+      "id": "fort-1766786525655-opp5dnn",
+      "itemId": "v2:/e2ec114f2f1555d459e2ead2d2e5e85c0af4982b3bc12ba06b9065df839c89be",
+      "itemName": "SpongeBob SquarePants Bundle",
+      "originalPrice": 3000,
+      "customPrice": 2500,
+      "active": true,
+      "createdAt": "2025-12-26T22:02:05.655Z",
+      "updatedAt": "2025-12-26T22:02:05.655Z"
+    }
+  ]
+}

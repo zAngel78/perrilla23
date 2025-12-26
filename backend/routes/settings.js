@@ -43,7 +43,7 @@ router.get('/', async (req, res) => {
  */
 router.put('/', authenticate, isAdmin, async (req, res) => {
   try {
-    const { fortniteVBucksRate, heroSlideInterval } = req.body;
+    const { fortniteVBucksRate, heroSlideInterval, fortniteUsernames } = req.body;
     
     // Validar que la tasa sea un número positivo (permite decimales)
     if (fortniteVBucksRate !== undefined) {
@@ -86,6 +86,7 @@ router.put('/', authenticate, isAdmin, async (req, res) => {
       ...currentSettings,
       ...(fortniteVBucksRate !== undefined && { fortniteVBucksRate: parseFloat(fortniteVBucksRate) }),
       ...(heroSlideInterval !== undefined && { heroSlideInterval: parseInt(heroSlideInterval) }),
+      ...(fortniteUsernames !== undefined && { fortniteUsernames: fortniteUsernames }),
       updatedAt: new Date().toISOString()
     };
     

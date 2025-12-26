@@ -108,18 +108,24 @@ export const CurrencyProvider: React.FC<CurrencyProviderProps> = ({ children }) 
    */
   const convertPrice = (priceInCLP: number): number => {
     if (!currentCurrency) return priceInCLP; // Ya está en CLP
-    
+
     // Los precios en BD están en CLP
     // Si es CLP, devolver directo
     if (currentCurrency.code === 'CLP') {
       return priceInCLP;
     }
-    
+
+    // Obtener la tasa de CLP desde availableCurrencies
+    const clpCurrency = availableCurrencies.find(c => c.code === 'CLP');
+    const clpRateToUSD = clpCurrency?.rateToUSD || 900; // Fallback a 900 si no se encuentra
+
     // Convertir CLP a la moneda seleccionada
-    // priceInCLP / 900 = USD, luego USD * rateToUSD de la moneda destino
-    const priceInUSD = priceInCLP / 900;
+    // 1. Convertir CLP a USD usando la tasa dinámica
+    const priceInUSD = priceInCLP / clpRateToUSD;
+
+    // 2. Convertir USD a la moneda destino
     const convertedPrice = priceInUSD * currentCurrency.rateToUSD;
-    
+
     return convertedPrice;
   };
 
