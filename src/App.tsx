@@ -16,6 +16,8 @@ import { PaymentSuccess } from './pages/PaymentSuccess';
 import { PaymentFailure } from './pages/PaymentFailure';
 import { Login } from './pages/Login';
 import { Register } from './pages/Register';
+import { ForgotPassword } from './pages/ForgotPassword';
+import { ResetPassword } from './pages/ResetPassword';
 import { Profile } from './pages/Profile';
 import { Dashboard } from './pages/admin/Dashboard';
 import { Products } from './pages/admin/Products';
@@ -53,6 +55,8 @@ function App() {
           {/* Rutas de Auth (sin MainLayout) */}
           <Route path="/login" element={<Login />} />
           <Route path="/register" element={<Register />} />
+          <Route path="/forgot-password" element={<ForgotPassword />} />
+          <Route path="/reset-password" element={<ResetPassword />} />
 
           {/* Rutas Admin (Protegidas) */}
           <Route path="/admin" element={

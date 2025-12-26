@@ -198,3 +198,96 @@ export async function sendOrderConfirmationEmail(customerEmail, customerName, or
     return { success: false, error: error.message };
   }
 }
+
+/**
+ * Enviar email de recuperación de contraseña
+ */
+export async function sendPasswordResetEmail(email, name, resetToken) {
+  try {
+    const mg = getMailgunClient();
+    
+    if (!mg) {
+      console.log('📧 [SIMULADO] Email de reset a:', email);
+      console.log('🔑 Token de reset:', resetToken);
+      return { success: true, simulated: true };
+    }
+
+    const resetUrl = `${process.env.FRONTEND_URL}/reset-password?token=${resetToken}`;
+
+    const messageData = {
+      from: `Tio Calcifer Shop <${process.env.MAILGUN_FROM_EMAIL}>`,
+      to: [email],
+      subject: '🔐 Recuperación de Contraseña - Tio Calcifer Shop',
+      html: `
+        <!DOCTYPE html>
+        <html>
+        <head>
+          <style>
+            body { font-family: Arial, sans-serif; line-height: 1.6; color: #333; }
+            .container { max-width: 600px; margin: 0 auto; padding: 20px; }
+            .header { background: linear-gradient(135deg, #00ff87 0%, #60efff 100%); padding: 30px; text-align: center; border-radius: 10px 10px 0 0; }
+            .header h1 { color: #0a0e27; margin: 0; font-size: 28px; }
+            .content { background: #f9f9f9; padding: 30px; border-radius: 0 0 10px 10px; }
+            .button { display: inline-block; padding: 15px 30px; background: #00ff87; color: #0a0e27; text-decoration: none; border-radius: 5px; font-weight: bold; margin: 20px 0; }
+            .button:hover { background: #00e676; }
+            .footer { text-align: center; margin-top: 30px; color: #666; font-size: 12px; }
+            .warning { background: #fff3cd; border-left: 4px solid #ffc107; padding: 15px; margin: 20px 0; }
+          </style>
+        </head>
+        <body>
+          <div class="container">
+            <div class="header">
+              <h1>🔐 Recuperación de Contraseña</h1>
+            </div>
+            <div class="content">
+              <p>Hola <strong>${name}</strong>,</p>
+              
+              <p>Recibimos una solicitud para restablecer la contraseña de tu cuenta en <strong>Tio Calcifer Shop</strong>.</p>
+              
+              <p>Para crear una nueva contraseña, haz clic en el siguiente botón:</p>
+              
+              <div style="text-align: center;">
+                <a href="${resetUrl}" class="button">Restablecer Contraseña</a>
+              </div>
+              
+              <p>O copia y pega este enlace en tu navegador:</p>
+              <p style="background: white; padding: 10px; border-radius: 5px; word-break: break-all; font-size: 12px;">
+                ${resetUrl}
+              </p>
+              
+              <div class="warning">
+                <strong>⚠️ Importante:</strong>
+                <ul style="margin: 10px 0;">
+                  <li>Este enlace es válido por <strong>1 hora</strong></li>
+                  <li>Si no solicitaste este cambio, ignora este correo</li>
+                  <li>Tu contraseña actual permanecerá activa hasta que completes el proceso</li>
+                </ul>
+              </div>
+              
+              <p>Si tienes algún problema, contáctanos respondiendo a este correo.</p>
+              
+              <p>Saludos,<br><strong>Equipo de Tio Calcifer Shop</strong></p>
+            </div>
+            <div class="footer">
+              <p>Este es un correo automático, por favor no respondas directamente.</p>
+              <p>&copy; ${new Date().getFullYear()} Tio Calcifer Shop. Todos los derechos reservados.</p>
+            </div>
+          </div>
+        </body>
+        </html>
+      `,
+    };
+
+    const result = await mg.messages.create(process.env.MAILGUN_DOMAIN, messageData);
+
+    console.log('✅ Email de reset enviado a:', email);
+
+    return {
+      success: true,
+      messageId: result.id,
+    };
+  } catch (error) {
+    console.error('Error sending password reset email:', error);
+    return { success: false, error: error.message };
+  }
+}

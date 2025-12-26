@@ -1,7 +1,9 @@
 import express from 'express';
 import bcrypt from 'bcryptjs';
 import jwt from 'jsonwebtoken';
+import crypto from 'crypto';
 import { db } from '../utils/jsonDB.js';
+import { sendPasswordResetEmail } from '../utils/mailer.js';
 
 const router = express.Router();
 
@@ -185,6 +187,127 @@ router.get('/me', async (req, res) => {
     res.status(401).json({
       success: false,
       error: 'Token inválido o expirado'
+    });
+  }
+});
+
+/**
+ * POST /api/auth/forgot-password
+ * Solicitar reset de contraseña
+ */
+router.post('/forgot-password', async (req, res) => {
+  try {
+    const { email } = req.body;
+    
+    if (!email) {
+      return res.status(400).json({
+        success: false,
+        error: 'Email es requerido'
+      });
+    }
+    
+    // Buscar usuario
+    const user = await db.findOne('users', u => u.email === email);
+    
+    // Por seguridad, siempre responder success aunque el usuario no exista
+    if (!user) {
+      return res.json({
+        success: true,
+        message: 'Si el email existe, recibirás instrucciones para restablecer tu contraseña'
+      });
+    }
+    
+    // Generar token de reset (válido por 1 hora)
+    const resetToken = crypto.randomBytes(32).toString('hex');
+    const resetTokenHash = crypto.createHash('sha256').update(resetToken).digest('hex');
+    const resetTokenExpiry = Date.now() + 3600000; // 1 hora
+    
+    // Guardar token en el usuario
+    await db.update('users', user.id, {
+      resetPasswordToken: resetTokenHash,
+      resetPasswordExpiry: resetTokenExpiry
+    });
+    
+    // Enviar email
+    await sendPasswordResetEmail(user.email, user.name, resetToken);
+    
+    console.log('✅ Token de reset generado para:', user.email);
+    
+    res.json({
+      success: true,
+      message: 'Si el email existe, recibirás instrucciones para restablecer tu contraseña'
+    });
+  } catch (error) {
+    console.error('Error requesting password reset:', error);
+    res.status(500).json({
+      success: false,
+      error: 'Error al procesar solicitud',
+      details: error.message
+    });
+  }
+});
+
+/**
+ * POST /api/auth/reset-password
+ * Resetear contraseña con token
+ */
+router.post('/reset-password', async (req, res) => {
+  try {
+    const { token, newPassword } = req.body;
+    
+    if (!token || !newPassword) {
+      return res.status(400).json({
+        success: false,
+        error: 'Token y nueva contraseña son requeridos'
+      });
+    }
+    
+    if (newPassword.length < 6) {
+      return res.status(400).json({
+        success: false,
+        error: 'La contraseña debe tener al menos 6 caracteres'
+      });
+    }
+    
+    // Hash del token recibido
+    const resetTokenHash = crypto.createHash('sha256').update(token).digest('hex');
+    
+    // Buscar usuario con token válido
+    const users = await db.getAll('users');
+    const user = users.find(u => 
+      u.resetPasswordToken === resetTokenHash &&
+      u.resetPasswordExpiry > Date.now()
+    );
+    
+    if (!user) {
+      return res.status(400).json({
+        success: false,
+        error: 'Token inválido o expirado'
+      });
+    }
+    
+    // Hash de la nueva contraseña
+    const hashedPassword = await bcrypt.hash(newPassword, 10);
+    
+    // Actualizar contraseña y limpiar token
+    await db.update('users', user.id, {
+      password: hashedPassword,
+      resetPasswordToken: null,
+      resetPasswordExpiry: null
+    });
+    
+    console.log('✅ Contraseña actualizada para:', user.email);
+    
+    res.json({
+      success: true,
+      message: 'Contraseña actualizada exitosamente'
+    });
+  } catch (error) {
+    console.error('Error resetting password:', error);
+    res.status(500).json({
+      success: false,
+      error: 'Error al restablecer contraseña',
+      details: error.message
     });
   }
 });
