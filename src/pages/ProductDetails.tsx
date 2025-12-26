@@ -176,7 +176,13 @@ export const ProductDetails = () => {
                   <ShoppingCart size={24} className="group-hover:scale-110 transition-transform" />
                   Agregar al Carro
                 </button>
-                <button className="flex-1 border border-white/20 text-white py-4 px-8 font-bold uppercase tracking-widest hover:bg-white/5 transition-colors">
+                <button 
+                  onClick={() => {
+                    addToCart(product);
+                    navigate('/checkout');
+                  }}
+                  className="flex-1 border border-white/20 text-white py-4 px-8 font-bold uppercase tracking-widest hover:bg-white/5 transition-colors"
+                >
                   Comprar Ahora
                 </button>
               </div>
