@@ -39,12 +39,14 @@ const typeMap: Record<string, string> = {
   'música': 'Music'
 };
 
+export interface FortniteShopSection {
+  name: string;
+  items: FortniteItem[];
+  bundleEntries: any[]; // Raw bundle entries for this section
+}
+
 export interface FortniteShopSections {
-  featured: FortniteItem[];
-  daily: FortniteItem[];
-  special: FortniteItem[];
-  bundles: FortniteItem[];
-  bundleEntries: any[]; // Raw bundle entries with full data
+  sections: FortniteShopSection[];
   all: FortniteItem[];
 }
 
@@ -55,70 +57,70 @@ export const getFortniteShop = async (): Promise<FortniteShopSections> => {
       API_ENDPOINTS.FORTNITE.SHOP,
       { skipAuth: true }
     );
-    const featured: FortniteItem[] = [];
-    const daily: FortniteItem[] = [];
-    const special: FortniteItem[] = [];
-    const bundles: FortniteItem[] = [];
-    const bundleEntries: any[] = [];
+
     const all: FortniteItem[] = [];
+    const sectionMap: Record<string, { items: FortniteItem[], bundleEntries: any[] }> = {};
 
-    // Process all entries and categorize by section/layout
+    // Process all entries and group by section name
     if (shopData.entries && Array.isArray(shopData.entries)) {
-      // Group by unique layouts first to understand structure
-      const layoutGroups: Record<string, any[]> = {};
-      
-      shopData.entries.forEach((entry: any) => {
-        const layoutName = entry.layout?.name || 'Unknown';
-        if (!layoutGroups[layoutName]) {
-          layoutGroups[layoutName] = [];
-        }
-        layoutGroups[layoutName].push(entry);
-      });
-
-      // Process all entries
       shopData.entries.forEach((entry: any) => {
         const transformed = transformNewItem(entry);
         all.push(transformed);
 
-        const layoutName = entry.layout?.name?.toLowerCase() || '';
-        const sectionIndex = entry.layout?.index || 0;
-        
-        // Detect real bundles (have bundle object OR "Bundle" in devName AND not just items with accessories)
-        const isRealBundle = entry.bundle || (entry.devName?.includes('Bundle') && entry.brItems?.length === 0);
-        
-        // Separate bundles
-        if (isRealBundle) {
-          bundles.push(transformed);
-          bundleEntries.push(entry); // Keep raw entry for bundle display
+        // Get section name from entry
+        const sectionName = entry.section?.name || entry.layout?.name || 'Other';
+
+        // Initialize section if not exists
+        if (!sectionMap[sectionName]) {
+          sectionMap[sectionName] = {
+            items: [],
+            bundleEntries: []
+          };
         }
-        
-        // Categorize based on layout name and index
-        if (sectionIndex <= 5 || layoutName.includes('featured') || layoutName.includes('battle')) {
-          featured.push(transformed);
-        } else if (layoutName.includes('jam') || layoutName.includes('track') || layoutName.includes('music')) {
-          special.push(transformed);
-        } else {
-          daily.push(transformed);
+
+        // Add item to section
+        sectionMap[sectionName].items.push(transformed);
+
+        // If it's a bundle, keep raw entry
+        const isRealBundle = entry.bundle || (entry.devName?.includes('Bundle') && entry.brItems?.length === 0);
+        if (isRealBundle) {
+          sectionMap[sectionName].bundleEntries.push(entry);
         }
       });
     }
 
-    console.log(`Loaded Fortnite shop - Featured: ${featured.length}, Daily: ${daily.length}, Special: ${special.length}, Bundles: ${bundles.length}, Total: ${all.length}`);
-    
-    return { featured, daily, special, bundles, bundleEntries, all };
+    // Convert map to array of sections
+    let sections: FortniteShopSection[] = Object.entries(sectionMap).map(([name, data]) => ({
+      name,
+      items: data.items,
+      bundleEntries: data.bundleEntries
+    }));
+
+    // Move Jam Tracks sections to the end
+    const jamTracksIndex = sections.findIndex(s =>
+      s.name.toLowerCase().includes('jam') ||
+      s.name.toLowerCase().includes('track') ||
+      s.name.toLowerCase().includes('music')
+    );
+
+    if (jamTracksIndex !== -1) {
+      const jamSection = sections.splice(jamTracksIndex, 1)[0];
+      sections.push(jamSection);
+    }
+
+    return { sections, all };
 
   } catch (error) {
     console.error('Error fetching Fortnite shop:', error);
-    
+
     // Return mock data as fallback
-    console.warn('Using fallback mock data');
     const mockItems = getMockData();
     return {
-      featured: mockItems.slice(0, 3),
-      daily: mockItems.slice(3, 6),
-      special: [],
-      bundles: [],
-      bundleEntries: [],
+      sections: [{
+        name: 'Featured',
+        items: mockItems,
+        bundleEntries: []
+      }],
       all: mockItems
     };
   }
@@ -196,21 +198,6 @@ function transformNewItem(entry: any): FortniteItem {
   
   // Fallback placeholder if no image (should be rare now)
   if (!image) {
-    console.warn('⚠️ Item without image:', {
-      name: name,
-      type: type,
-      offerId: entry.offerId,
-      devName: entry.devName,
-      hasBrItems: !!entry.brItems,
-      brItemsLength: entry.brItems?.length || 0,
-      hasNewDisplayAsset: !!entry.newDisplayAsset,
-      hasRenderImages: !!entry.newDisplayAsset?.renderImages,
-      renderImagesLength: entry.newDisplayAsset?.renderImages?.length || 0,
-      hasBundle: !!entry.bundle,
-      itemImages: item.images ? Object.keys(item.images) : 'none'
-    });
-    console.log('📦 Full entry:', entry);
-    
     const typeColors: Record<string, string> = {
       'outfit': '4A90E2',
       'emote': 'F5C259',
