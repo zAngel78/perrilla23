@@ -21,6 +21,7 @@ export interface Order {
   customerId?: string | null; // Deprecated, usar userId
   customerName: string;
   customerEmail: string;
+  fortniteUsername?: string; // Username de Fortnite para productos de Fortnite
   items: OrderItem[];
   products?: OrderItem[]; // Deprecated, usar items
   subtotal: number;

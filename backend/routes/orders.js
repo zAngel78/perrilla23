@@ -86,6 +86,7 @@ router.post('/', authenticate, async (req, res) => {
       userId,
       customerName,
       customerEmail,
+      fortniteUsername,
       items,
       subtotal,
       tax,
@@ -104,7 +105,7 @@ router.post('/', authenticate, async (req, res) => {
       });
     }
     
-    const newOrder = await db.create('orders', {
+    const orderData = {
       userId: userId || req.user.id,
       customerName,
       customerEmail,
@@ -116,7 +117,14 @@ router.post('/', authenticate, async (req, res) => {
       status: status || 'pending',
       paymentMethod: paymentMethod || 'mercadopago',
       shippingAddress: shippingAddress || {}
-    });
+    };
+
+    // Agregar fortniteUsername solo si existe
+    if (fortniteUsername) {
+      orderData.fortniteUsername = fortniteUsername;
+    }
+    
+    const newOrder = await db.create('orders', orderData);
     
     console.log('✅ Orden creada:', newOrder.id);
     

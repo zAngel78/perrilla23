@@ -15,10 +15,14 @@ export const Checkout = () => {
   const navigate = useNavigate();
   const [promoCode, setPromoCode] = useState('');
   const [processing, setProcessing] = useState(false);
+  const [fortniteUsername, setFortniteUsername] = useState('');
 
   const subtotal = total;
   const shipping = 0; // Free shipping
   const finalTotal = subtotal + shipping;
+
+  // Verificar si hay productos de Fortnite en el carrito
+  const hasFortniteItems = items.some(item => item.category === 'fortnite');
 
   const handleCheckout = async () => {
     if (!isAuthenticated) {
@@ -30,11 +34,19 @@ export const Checkout = () => {
     try {
       setProcessing(true);
 
+      // Validar username de Fortnite si hay items de Fortnite
+      if (hasFortniteItems && !fortniteUsername.trim()) {
+        alert('Por favor ingresa tu nombre de usuario de Fortnite');
+        setProcessing(false);
+        return;
+      }
+
       // Crear la orden
       const orderData = {
         userId: user?.id,
         customerName: user?.name || 'Cliente',
         customerEmail: user?.email || '',
+        fortniteUsername: hasFortniteItems ? fortniteUsername : undefined,
         items: items.map(item => ({
           productId: item.id,
           name: item.name,
@@ -170,6 +182,34 @@ export const Checkout = () => {
                 </motion.div>
               ))}
             </div>
+
+            {/* Fortnite Username (solo si hay items de Fortnite) */}
+            {hasFortniteItems && (
+              <motion.div
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                className="bg-gradient-to-br from-purple-500/10 to-blue-500/10 border border-purple-500/30 rounded-lg p-6"
+              >
+                <h3 className="text-white font-bold mb-2 flex items-center gap-2">
+                  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" className="text-purple-400">
+                    <path d="M12 2L2 7L12 12L22 7L12 2Z" fill="currentColor"/>
+                    <path d="M2 17L12 22L22 17" stroke="currentColor" strokeWidth="2"/>
+                  </svg>
+                  Usuario de Fortnite
+                </h3>
+                <p className="text-gray-400 text-sm mb-3">
+                  Ingresa tu nombre de usuario para recibir los V-Bucks
+                </p>
+                <input
+                  type="text"
+                  placeholder="Ej: NinjaFortnite"
+                  value={fortniteUsername}
+                  onChange={(e) => setFortniteUsername(e.target.value)}
+                  className="w-full px-4 py-3 bg-black/40 border border-purple-500/30 rounded text-white placeholder-gray-500 focus:outline-none focus:border-purple-500/60 focus:bg-black/60 transition-all"
+                  required={hasFortniteItems}
+                />
+              </motion.div>
+            )}
 
             {/* Promo Code */}
             <div className="bg-white/5 border border-white/10 rounded-lg p-6">

@@ -16,6 +16,7 @@ import heroSlidesRouter from './routes/hero-slides.js';
 import currenciesRouter from './routes/currencies.js';
 import paymentsRouter from './routes/payments.js';
 import webhooksRouter from './routes/webhooks.js';
+import fortnitePricesRouter from './routes/fortnite-prices.js';
 
 // Importar middlewares
 import { authenticate, isAdmin } from './middleware/auth.js';
@@ -109,6 +110,10 @@ app.use('/api/currencies', currenciesRouter);
 // Rutas de pagos (MercadoPago)
 app.use('/api/payments', paymentsRouter);
 app.use('/api/payments', webhooksRouter);
+
+// Rutas de precios de Fortnite
+// GET es público (para obtener overrides), CRUD solo admin
+app.use('/api/fortnite-prices', fortnitePricesRouter);
 
 // Fortnite shop endpoint
 app.get('/api/fortnite/shop', async (req, res) => {

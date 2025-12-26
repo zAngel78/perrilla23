@@ -68,6 +68,11 @@ export const AdminLayout = () => {
       path: '/admin/currencies',
     },
     {
+      icon: Zap,
+      label: 'Precios Fortnite',
+      path: '/admin/fortnite-prices',
+    },
+    {
       icon: Settings,
       label: 'Configuración',
       path: '/admin/settings',

@@ -143,6 +143,9 @@ export const Orders = () => {
                   Cliente
                 </th>
                 <th className="px-6 py-4 text-left text-xs font-bold text-gray-400 uppercase tracking-wider">
+                  Usuario Fortnite
+                </th>
+                <th className="px-6 py-4 text-left text-xs font-bold text-gray-400 uppercase tracking-wider">
                   Productos
                 </th>
                 <th className="px-6 py-4 text-left text-xs font-bold text-gray-400 uppercase tracking-wider">
@@ -179,6 +182,19 @@ export const Orders = () => {
                         <p className="text-white font-semibold">{order.customerName}</p>
                         <p className="text-gray-400 text-sm">{order.customerEmail}</p>
                       </div>
+                    </td>
+                    <td className="px-6 py-4">
+                      {order.fortniteUsername ? (
+                        <div className="flex items-center gap-2">
+                          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" className="text-purple-400">
+                            <path d="M12 2L2 7L12 12L22 7L12 2Z" fill="currentColor"/>
+                            <path d="M2 17L12 22L22 17" stroke="currentColor" strokeWidth="2"/>
+                          </svg>
+                          <span className="text-purple-400 font-bold">{order.fortniteUsername}</span>
+                        </div>
+                      ) : (
+                        <span className="text-gray-500 text-sm">-</span>
+                      )}
                     </td>
                     <td className="px-6 py-4">
                       <p className="text-white">{(order.items || order.products || []).length} items</p>
