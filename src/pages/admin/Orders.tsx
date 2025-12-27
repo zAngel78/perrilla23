@@ -6,6 +6,7 @@ import { ordersService, Order } from '../../services/orders.service';
 export const Orders = () => {
   const [orders, setOrders] = useState<Order[]>([]);
   const [loading, setLoading] = useState(true);
+  const [selectedOrder, setSelectedOrder] = useState<Order | null>(null);
   const [stats, setStats] = useState({
     total: 0,
     pending: 0,
@@ -213,8 +214,9 @@ export const Orders = () => {
                     </td>
                     <td className="px-6 py-4 text-right">
                       <button 
-                        onClick={() => alert('Ver detalle de orden: Funcionalidad en desarrollo')}
+                        onClick={() => setSelectedOrder(order)}
                         className="p-2 text-gray-400 hover:text-white hover:bg-white/10 rounded-lg transition-all"
+                        title="Ver detalles"
                       >
                         <Eye size={18} />
                       </button>
@@ -226,6 +228,154 @@ export const Orders = () => {
           </table>
         </div>
       </div>
+
+      {/* Order Detail Modal */}
+      {selectedOrder && (
+        <div className="fixed inset-0 bg-black/80 backdrop-blur-sm z-50 flex items-center justify-center p-4">
+          <motion.div
+            initial={{ opacity: 0, scale: 0.95 }}
+            animate={{ opacity: 1, scale: 1 }}
+            className="bg-[#0f1629] border border-white/10 rounded-2xl max-w-3xl w-full max-h-[90vh] overflow-y-auto"
+          >
+            {/* Modal Header */}
+            <div className="sticky top-0 bg-[#0f1629] border-b border-white/10 p-6 flex items-center justify-between">
+              <div>
+                <h2 className="text-2xl font-black text-white uppercase">Detalle de Orden</h2>
+                <p className="text-gray-400 text-sm mt-1">{selectedOrder.id}</p>
+              </div>
+              <button
+                onClick={() => setSelectedOrder(null)}
+                className="p-2 hover:bg-white/10 rounded-lg transition-colors"
+              >
+                <XCircle size={24} className="text-gray-400" />
+              </button>
+            </div>
+
+            {/* Modal Content */}
+            <div className="p-6 space-y-6">
+              {/* Customer Info */}
+              <div className="bg-white/5 border border-white/10 rounded-xl p-4">
+                <h3 className="text-white font-bold mb-3 flex items-center gap-2">
+                  <Package size={18} className="text-brand-green" />
+                  Información del Cliente
+                </h3>
+                <div className="grid grid-cols-2 gap-4">
+                  <div>
+                    <p className="text-gray-400 text-sm">Nombre</p>
+                    <p className="text-white font-semibold">{selectedOrder.customerName}</p>
+                  </div>
+                  <div>
+                    <p className="text-gray-400 text-sm">Email</p>
+                    <p className="text-white font-semibold">{selectedOrder.customerEmail}</p>
+                  </div>
+                  {selectedOrder.fortniteUsername && (
+                    <div className="col-span-2">
+                      <p className="text-gray-400 text-sm">Usuario de Fortnite</p>
+                      <div className="flex items-center gap-2 mt-1">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" className="text-purple-400">
+                          <path d="M12 2L2 7L12 12L22 7L12 2Z" fill="currentColor"/>
+                          <path d="M2 17L12 22L22 17" stroke="currentColor" strokeWidth="2"/>
+                        </svg>
+                        <span className="text-purple-400 font-bold">{selectedOrder.fortniteUsername}</span>
+                      </div>
+                    </div>
+                  )}
+                </div>
+              </div>
+
+              {/* Order Status */}
+              <div className="bg-white/5 border border-white/10 rounded-xl p-4">
+                <h3 className="text-white font-bold mb-3">Estado de la Orden</h3>
+                <div className="flex items-center gap-4">
+                  {(() => {
+                    const statusConfig = getStatusConfig(selectedOrder.status);
+                    const StatusIcon = statusConfig.icon;
+                    return (
+                      <span className={`inline-flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-bold ${statusConfig.bg} ${statusConfig.color}`}>
+                        <StatusIcon size={16} />
+                        {statusConfig.label}
+                      </span>
+                    );
+                  })()}
+                  <div className="flex-1">
+                    <p className="text-gray-400 text-sm">Fecha de creación</p>
+                    <p className="text-white">{new Date(selectedOrder.createdAt).toLocaleString()}</p>
+                  </div>
+                </div>
+              </div>
+
+              {/* Products */}
+              <div className="bg-white/5 border border-white/10 rounded-xl p-4">
+                <h3 className="text-white font-bold mb-3">Productos</h3>
+                <div className="space-y-3">
+                  {(selectedOrder.items || []).map((item, index) => (
+                    <div key={index} className="bg-black/40 border border-white/10 rounded-lg p-3 flex items-center gap-4">
+                      {item.image && (
+                        <img 
+                          src={item.image} 
+                          alt={item.name}
+                          className="w-16 h-16 object-cover rounded-lg"
+                        />
+                      )}
+                      <div className="flex-1">
+                        <p className="text-white font-bold">{item.name}</p>
+                        {item.description && (
+                          <p className="text-gray-400 text-sm">{item.description}</p>
+                        )}
+                        <p className="text-gray-400 text-sm">Cantidad: {item.quantity}</p>
+                      </div>
+                      <div className="text-right">
+                        <p className="text-brand-green font-bold">${item.price}</p>
+                        <p className="text-gray-400 text-xs">c/u</p>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+
+              {/* Order Summary */}
+              <div className="bg-white/5 border border-white/10 rounded-xl p-4">
+                <h3 className="text-white font-bold mb-3">Resumen</h3>
+                <div className="space-y-2">
+                  <div className="flex justify-between">
+                    <span className="text-gray-400">Subtotal</span>
+                    <span className="text-white">${selectedOrder.subtotal?.toFixed(2) || selectedOrder.total.toFixed(2)}</span>
+                  </div>
+                  {selectedOrder.shipping !== undefined && selectedOrder.shipping > 0 && (
+                    <div className="flex justify-between">
+                      <span className="text-gray-400">Envío</span>
+                      <span className="text-white">${selectedOrder.shipping.toFixed(2)}</span>
+                    </div>
+                  )}
+                  <div className="border-t border-white/10 pt-2 flex justify-between">
+                    <span className="text-white font-bold text-lg">Total</span>
+                    <span className="text-brand-green font-black text-xl">${selectedOrder.total.toFixed(2)}</span>
+                  </div>
+                </div>
+              </div>
+
+              {/* Payment Info */}
+              {selectedOrder.mercadopagoPaymentId && (
+                <div className="bg-white/5 border border-white/10 rounded-xl p-4">
+                  <h3 className="text-white font-bold mb-3">Información de Pago</h3>
+                  <div className="space-y-2">
+                    <div>
+                      <p className="text-gray-400 text-sm">ID de Pago (MercadoPago)</p>
+                      <p className="text-white font-mono">{selectedOrder.mercadopagoPaymentId}</p>
+                    </div>
+                    {selectedOrder.paidAt && (
+                      <div>
+                        <p className="text-gray-400 text-sm">Fecha de pago</p>
+                        <p className="text-white">{new Date(selectedOrder.paidAt).toLocaleString()}</p>
+                      </div>
+                    )}
+                  </div>
+                </div>
+              )}
+            </div>
+          </motion.div>
+        </div>
+      )}
     </div>
   );
 };
