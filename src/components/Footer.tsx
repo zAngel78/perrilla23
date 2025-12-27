@@ -14,8 +14,8 @@ export const Footer = () => {
             />
           </div>
           <p className="text-sm text-gray-400">
-            Tu destino definitivo para videojuegos, consolas y accesorios. 
-            Integración oficial con la tienda de Fortnite.
+            TioCalcifer, tu tienda de confianza para productos de Fortnite.
+            Club Fortnite, regalos, suscripciones y entrega rápida a todo LATAM.
           </p>
         </div>
         <div>
