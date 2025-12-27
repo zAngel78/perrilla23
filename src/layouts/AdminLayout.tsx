@@ -15,7 +15,8 @@ import {
   Tag,
   Key,
   Image,
-  DollarSign
+  DollarSign,
+  Mail
 } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
 
