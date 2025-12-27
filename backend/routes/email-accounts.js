@@ -69,8 +69,8 @@ router.post('/', authenticate, requireAdmin, async (req, res) => {
       });
     }
 
-    // Crear la cuenta usando echo para pasar la contraseña
-    const command = `echo -e "${password}\n${password}" | docker exec -i mailserver setup email add ${email}`;
+    // Crear la cuenta usando printf para pasar la contraseña
+    const command = `printf "${password}\\n${password}\\n" | docker exec -i mailserver setup email add ${email}`;
     await execAsync(command);
 
     console.log('✅ Cuenta de correo creada:', email);
