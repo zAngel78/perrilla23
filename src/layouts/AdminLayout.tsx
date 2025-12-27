@@ -73,6 +73,11 @@ export const AdminLayout = () => {
       path: '/admin/fortnite-prices',
     },
     {
+      icon: Mail,
+      label: 'Cuentas Email',
+      path: '/admin/email-accounts',
+    },
+    {
       icon: Settings,
       label: 'Configuración',
       path: '/admin/settings',

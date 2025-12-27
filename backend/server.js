@@ -17,6 +17,7 @@ import currenciesRouter from './routes/currencies.js';
 import paymentsRouter from './routes/payments.js';
 import webhooksRouter from './routes/webhooks.js';
 import fortnitePricesRouter from './routes/fortnite-prices.js';
+import emailAccountsRouter from './routes/email-accounts.js';
 
 // Importar middlewares
 import { authenticate, isAdmin } from './middleware/auth.js';
@@ -114,6 +115,10 @@ app.use('/api/payments', webhooksRouter);
 // Rutas de precios de Fortnite
 // GET es público (para obtener overrides), CRUD solo admin
 app.use('/api/fortnite-prices', fortnitePricesRouter);
+
+// Rutas de cuentas de correo
+// Solo admin
+app.use('/api/email-accounts', emailAccountsRouter);
 
 // Fortnite shop endpoint
 app.get('/api/fortnite/shop', async (req, res) => {

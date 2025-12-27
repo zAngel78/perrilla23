@@ -31,6 +31,7 @@ import { DigitalKeys } from './pages/admin/DigitalKeys';
 import { HeroSlides } from './pages/admin/HeroSlides';
 import { Currencies } from './pages/admin/Currencies';
 import { FortnitePrices } from './pages/admin/FortnitePrices';
+import { EmailAccounts } from './pages/admin/EmailAccounts';
 import { ProtectedRoute } from './components/ProtectedRoute';
 
 function App() {
@@ -77,6 +78,7 @@ function App() {
             <Route path="hero-slides" element={<HeroSlides />} />
             <Route path="currencies" element={<Currencies />} />
             <Route path="fortnite-prices" element={<FortnitePrices />} />
+            <Route path="email-accounts" element={<EmailAccounts />} />
             <Route path="settings" element={<Settings />} />
           </Route>
 
